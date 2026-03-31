@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Manager — Arrays &amp; Objects</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f1f5f9; color: #1e293b; padding: 2rem 1rem; }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { text-align: center; font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .subtitle { text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 1.5rem; margin-bottom: 1.5rem; }
+    h2 { font-size: 1.05rem; color: #334155; margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+    th, td { padding: 0.6rem 0.75rem; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+    th { background: #f8fafc; color: #475569; font-weight: 600; }
+    tr:hover { background: #f8fafc; }
+    .grade-A { color: #16a34a; font-weight: 600; }
+    .grade-B { color: #2563eb; font-weight: 600; }
+    .grade-C { color: #d97706; font-weight: 600; }
+    .grade-F { color: #dc2626; font-weight: 600; }
+    .stats { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; }
+    .stat-box { flex: 1; min-width: 120px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem; text-align: center; }
+    .stat-box .value { font-size: 1.5rem; font-weight: 700; color: #4f46e5; }
+    .stat-box .label { font-size: 0.8rem; color: #64748b; margin-top: 0.15rem; }
+    #addForm { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    #addForm input { flex: 1; min-width: 80px; padding: 0.5rem 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.9rem; }
+    #addForm button { padding: 0.5rem 1.25rem; background: #4f46e5; color: #fff; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    #addForm button:hover { background: #4338ca; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Student Manager</h1>
+    <p class="subtitle">Assignment — 28th February 2026</p>
+
+    <div class="card">
+      <h2>Add Student</h2>
+      <form id="addForm">
+        <input type="text" id="nameInput" placeholder="Name" required>
+        <input type="number" id="mathInput" placeholder="Math" min="0" max="100" required>
+        <input type="number" id="scienceInput" placeholder="Science" min="0" max="100" required>
+        <input type="number" id="englishInput" placeholder="English" min="0" max="100" required>
+        <button type="submit">Add</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Student Records</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Math</th>
+            <th>Science</th>
+            <th>English</th>
+            <th>Average</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Class Statistics</h2>
+      <div class="stats">
+        <div class="stat-box"><div class="value" id="statCount">0</div><div class="label">Students</div></div>
+        <div class="stat-box"><div class="value" id="statAvg">0</div><div class="label">Class Average</div></div>
+        <div class="stat-box"><div class="value" id="statTop">—</div><div class="label">Topper</div></div>
+        <div class="stat-box"><div class="value" id="statPass">0</div><div class="label">Pass Rate</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const students = [
+      { name: "Aarav",   marks: { math: 85, science: 92, english: 78 } },
+      { name: "Ishita",  marks: { math: 74, science: 68, english: 81 } },
+      { name: "Rohan",   marks: { math: 95, science: 88, english: 92 } },
+      { name: "Priya",   marks: { math: 62, science: 55, english: 70 } },
+      { name: "Karan",   marks: { math: 30, science: 42, english: 35 } },
+    ];
+
+    function calcAverage(marks) {
+      const values = Object.values(marks);
+      return values.reduce((sum, v) => sum + v, 0) / values.length;
+    }
+
+    function getGrade(avg) {
+      if (avg >= 90) return { letter: "A", cls: "grade-A" };
+      if (avg >= 75) return { letter: "B", cls: "grade-B" };
+      if (avg >= 50) return { letter: "C", cls: "grade-C" };
+      return { letter: "F", cls: "grade-F" };
+    }
+
+    function render() {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      students.forEach((s, i) => {
+        const avg = calcAverage(s.marks);
+        const grade = getGrade(avg);
+        tbody.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${s.name}</td>
+            <td>${s.marks.math}</td>
+            <td>${s.marks.science}</td>
+            <td>${s.marks.english}</td>
+            <td>${avg.toFixed(1)}</td>
+            <td class="${grade.cls}">${grade.letter}</td>
+          </tr>`;
+      });
+
+      const count = students.length;
+      const classAvg = count ? (students.reduce((s, st) => s + calcAverage(st.marks), 0) / count).toFixed(1) : 0;
+      const topper = count ? students.reduce((top, st) => calcAverage(st.marks) > calcAverage(top.marks) ? st : top).name : "—";
+      const passCount = students.filter(s => calcAverage(s.marks) >= 50).length;
+
+      document.getElementById("statCount").textContent = count;
+      document.getElementById("statAvg").textContent = classAvg;
+      document.getElementById("statTop").textContent = topper;
+      document.getElementById("statPass").textContent = count ? Math.round((passCount / count) * 100) + "%" : "0%";
+    }
+
+    document.getElementById("addForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("nameInput").value.trim();
+      const math = parseInt(document.getElementById("mathInput").value);
+      const science = parseInt(document.getElementById("scienceInput").value);
+      const english = parseInt(document.getElementById("englishInput").value);
+      if (!name) return;
+      students.push({ name, marks: { math, science, english } });
+      this.reset();
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

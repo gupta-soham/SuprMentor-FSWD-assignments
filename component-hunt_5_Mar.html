@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Component Hunt — Breaking Down a Website</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f1f5f9; color: #1e293b; padding: 2rem 1rem; line-height: 1.6; }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { text-align: center; font-size: 1.5rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; font-size: 0.9rem; margin-bottom: 2rem; }
+    .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 1.5rem 2rem; margin-bottom: 1.5rem; }
+    h2 { font-size: 1.1rem; color: #334155; margin-bottom: 0.6rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem; }
+    h3 { font-size: 0.95rem; color: #4f46e5; margin: 1rem 0 0.3rem; }
+    p { font-size: 0.9rem; color: #475569; margin: 0.3rem 0; }
+    ul { margin: 0.3rem 0; padding-left: 1.25rem; }
+    li { font-size: 0.9rem; color: #475569; margin-bottom: 0.25rem; }
+    li::marker { color: #4f46e5; }
+    .mermaid { display: flex; justify-content: center; margin: 1rem 0; }
+    .wireframe { display: grid; gap: 0.75rem; margin-top: 1rem; }
+    .wire-section { border: 2px dashed #c7d2fe; border-radius: 10px; padding: 0.75rem 1rem; background: #faf5ff; position: relative; }
+    .wire-section .tag { position: absolute; top: -0.6rem; left: 0.75rem; background: #4f46e5; color: #fff; font-size: 0.7rem; font-weight: 600; padding: 0.1rem 0.5rem; border-radius: 4px; }
+    .wire-row { display: flex; gap: 0.75rem; }
+    .wire-row > div { flex: 1; }
+    .wire-inner { border: 1.5px dashed #a5b4fc; border-radius: 6px; padding: 0.5rem; background: #eef2ff; margin-top: 0.4rem; font-size: 0.8rem; color: #6366f1; text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; font-size: 0.88rem; }
+    th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #f1f5f9; }
+    th { background: #f8fafc; color: #475569; font-weight: 600; }
+    .comp-tag { display: inline-block; background: #eef2ff; color: #4338ca; font-size: 0.78rem; font-weight: 600; padding: 0.15rem 0.5rem; border-radius: 4px; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Component Hunt</h1>
+    <p class="subtitle">Assignment — 5th March 2026 · Breaking down YouTube into React Components</p>
+
+    <div class="card">
+      <h2>1. Website Chosen: YouTube</h2>
+      <p>YouTube is a complex, component-rich web application. Its homepage has a clear visual hierarchy that maps well to a React component tree — a navbar, sidebar, video grid, and individual video cards.</p>
+    </div>
+
+    <div class="card">
+      <h2>2. Visual Wireframe — Component Boundaries</h2>
+      <div class="wireframe">
+        <div class="wire-section">
+          <span class="tag">&lt;Navbar /&gt;</span>
+          <div class="wire-row" style="margin-top:0.5rem;">
+            <div class="wire-inner">&lt;Logo /&gt;</div>
+            <div class="wire-inner" style="flex:2">&lt;SearchBar /&gt;</div>
+            <div class="wire-inner">&lt;UserMenu /&gt;</div>
+          </div>
+        </div>
+
+        <div class="wire-row">
+          <div class="wire-section" style="flex:0 0 180px;">
+            <span class="tag">&lt;Sidebar /&gt;</span>
+            <div class="wire-inner" style="margin-top:0.5rem;">&lt;NavItem /&gt;</div>
+            <div class="wire-inner">&lt;NavItem /&gt;</div>
+            <div class="wire-inner">&lt;NavItem /&gt;</div>
+            <div class="wire-inner">&lt;NavItem /&gt;</div>
+          </div>
+          <div class="wire-section" style="flex:1;">
+            <span class="tag">&lt;MainContent /&gt;</span>
+            <div class="wire-inner" style="margin-top:0.5rem;">&lt;CategoryChips /&gt;</div>
+            <div class="wire-row" style="margin-top:0.4rem;">
+              <div class="wire-inner">&lt;VideoCard /&gt;</div>
+              <div class="wire-inner">&lt;VideoCard /&gt;</div>
+              <div class="wire-inner">&lt;VideoCard /&gt;</div>
+            </div>
+            <div class="wire-row">
+              <div class="wire-inner">&lt;VideoCard /&gt;</div>
+              <div class="wire-inner">&lt;VideoCard /&gt;</div>
+              <div class="wire-inner">&lt;VideoCard /&gt;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3. Component Tree Diagram</h2>
+      <pre class="mermaid">
+graph TD
+  App["App"]
+  Navbar["Navbar"]
+  Logo["Logo"]
+  SearchBar["SearchBar"]
+  UserMenu["UserMenu"]
+  Sidebar["Sidebar"]
+  NavItem["NavItem ×N"]
+  MainContent["MainContent"]
+  CategoryChips["CategoryChips"]
+  Chip["Chip ×N"]
+  VideoGrid["VideoGrid"]
+  VideoCard["VideoCard ×N"]
+  Thumbnail["Thumbnail"]
+  VideoInfo["VideoInfo"]
+  ChannelAvatar["ChannelAvatar"]
+
+  App --> Navbar
+  App --> Sidebar
+  App --> MainContent
+
+  Navbar --> Logo
+  Navbar --> SearchBar
+  Navbar --> UserMenu
+
+  Sidebar --> NavItem
+
+  MainContent --> CategoryChips
+  MainContent --> VideoGrid
+
+  CategoryChips --> Chip
+
+  VideoGrid --> VideoCard
+  VideoCard --> Thumbnail
+  VideoCard --> VideoInfo
+  VideoCard --> ChannelAvatar
+      </pre>
+    </div>
+
+    <div class="card">
+      <h2>4. Component Breakdown</h2>
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Purpose</th><th>Props</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="comp-tag">App</span></td><td>Root component, holds layout structure</td><td>—</td></tr>
+          <tr><td><span class="comp-tag">Navbar</span></td><td>Top navigation bar</td><td>—</td></tr>
+          <tr><td><span class="comp-tag">Logo</span></td><td>YouTube logo / home link</td><td>—</td></tr>
+          <tr><td><span class="comp-tag">SearchBar</span></td><td>Search input + button</td><td>onSearch</td></tr>
+          <tr><td><span class="comp-tag">UserMenu</span></td><td>Profile icon, notifications, upload</td><td>user</td></tr>
+          <tr><td><span class="comp-tag">Sidebar</span></td><td>Left navigation panel</td><td>isOpen</td></tr>
+          <tr><td><span class="comp-tag">NavItem</span></td><td>Individual sidebar link</td><td>icon, label, href</td></tr>
+          <tr><td><span class="comp-tag">MainContent</span></td><td>Central content area</td><td>—</td></tr>
+          <tr><td><span class="comp-tag">CategoryChips</span></td><td>Horizontal scrollable filter chips</td><td>categories, active</td></tr>
+          <tr><td><span class="comp-tag">Chip</span></td><td>Single category pill</td><td>label, isActive, onClick</td></tr>
+          <tr><td><span class="comp-tag">VideoGrid</span></td><td>Grid layout of video cards</td><td>videos</td></tr>
+          <tr><td><span class="comp-tag">VideoCard</span></td><td>Single video preview tile</td><td>title, thumbnail, channel, views, time</td></tr>
+          <tr><td><span class="comp-tag">Thumbnail</span></td><td>Video preview image + duration</td><td>src, duration</td></tr>
+          <tr><td><span class="comp-tag">VideoInfo</span></td><td>Title, views, timestamp text</td><td>title, views, publishedAt</td></tr>
+          <tr><td><span class="comp-tag">ChannelAvatar</span></td><td>Small circular channel icon</td><td>src, name</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>5. Data Flow Diagram</h2>
+      <pre class="mermaid">
+flowchart LR
+  subgraph State
+    S1["searchQuery"]
+    S2["activeCategory"]
+    S3["videos[ ]"]
+  end
+
+  subgraph Components
+    SB["SearchBar"] -- "updates" --> S1
+    CC["CategoryChips"] -- "updates" --> S2
+    S1 -- "filters" --> S3
+    S2 -- "filters" --> S3
+    S3 -- "passed as props" --> VG["VideoGrid"]
+    VG -- "maps over" --> VC["VideoCard"]
+  end
+      </pre>
+    </div>
+
+    <div class="card">
+      <h2>6. Key Observations</h2>
+      <ul>
+        <li><strong>Reusability:</strong> <span class="comp-tag">VideoCard</span>, <span class="comp-tag">NavItem</span>, and <span class="comp-tag">Chip</span> are repeated many times with different props — perfect for components.</li>
+        <li><strong>Composition:</strong> <span class="comp-tag">VideoCard</span> is itself composed of <span class="comp-tag">Thumbnail</span>, <span class="comp-tag">VideoInfo</span>, and <span class="comp-tag">ChannelAvatar</span>.</li>
+        <li><strong>State lifting:</strong> Search query and active category live in a parent and filter the videos array passed down to the grid.</li>
+        <li><strong>Single Responsibility:</strong> Each component handles one concern — <span class="comp-tag">SearchBar</span> handles input, <span class="comp-tag">VideoGrid</span> handles layout, <span class="comp-tag">VideoCard</span> handles display.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'default' });</script>
+</body>
+</html>

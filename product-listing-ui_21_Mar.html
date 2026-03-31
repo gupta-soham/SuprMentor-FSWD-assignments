@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Listing UI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "DM Sans", system-ui, sans-serif;
+        background: #fafaf9;
+        color: #1c1917;
+        min-height: 100vh;
+      }
+      header {
+        background: #1c1917;
+        color: #fafaf9;
+        padding: 1.25rem 1.5rem;
+      }
+      header h1 {
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      header p {
+        font-size: 0.8rem;
+        color: #a8a29e;
+        margin-top: 0.2rem;
+      }
+      .toolbar {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+      }
+      .toolbar label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #57534e;
+        margin-right: 0.35rem;
+      }
+      .toolbar input[type="search"],
+      .toolbar select {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d6d3d1;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.88rem;
+        background: #fff;
+      }
+      .toolbar input[type="search"] {
+        min-width: 200px;
+        flex: 1;
+      }
+      .count {
+        margin-left: auto;
+        font-size: 0.85rem;
+        color: #78716c;
+      }
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem 3rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1.25rem;
+      }
+      .card {
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #e7e5e4;
+        overflow: hidden;
+        transition:
+          box-shadow 0.2s,
+          transform 0.2s;
+      }
+      .card:hover {
+        box-shadow: 0 12px 40px rgba(28, 25, 23, 0.08);
+        transform: translateY(-2px);
+      }
+      .card-img {
+        height: 140px;
+        background: linear-gradient(145deg, #e7e5e4, #d6d3d1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+      }
+      .card-body {
+        padding: 1rem 1.1rem 1.15rem;
+      }
+      .card-cat {
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #78716c;
+        margin-bottom: 0.25rem;
+      }
+      .card-title {
+        font-size: 1.05rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+      }
+      .card-desc {
+        font-size: 0.82rem;
+        color: #78716c;
+        line-height: 1.45;
+        margin-bottom: 0.75rem;
+      }
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .price {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #0d9488;
+      }
+      .btn {
+        background: #1c1917;
+        color: #fff;
+        border: none;
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+      }
+      .btn:hover {
+        background: #292524;
+      }
+      .empty {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #78716c;
+        font-size: 0.95rem;
+      }
+      .hidden {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Nova Market</h1>
+      <p>Product Listing UI — Assignment 21st March 2026</p>
+    </header>
+
+    <div class="toolbar">
+      <div>
+        <label for="search">Search</label>
+        <input
+          type="search"
+          id="search"
+          placeholder="Product name..."
+          autocomplete="off"
+        />
+      </div>
+      <div>
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="all">All</option>
+          <option value="audio">Audio</option>
+          <option value="wearables">Wearables</option>
+          <option value="home">Home</option>
+          <option value="accessories">Accessories</option>
+        </select>
+      </div>
+      <div>
+        <label for="sort">Sort</label>
+        <select id="sort">
+          <option value="default">Featured</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+          <option value="name">Name A–Z</option>
+        </select>
+      </div>
+      <div>
+        <label for="maxPrice">Max price (₹)</label>
+        <select id="maxPrice">
+          <option value="999999">Any</option>
+          <option value="5000">Under ₹5,000</option>
+          <option value="15000">Under ₹15,000</option>
+          <option value="30000">Under ₹30,000</option>
+        </select>
+      </div>
+      <span class="count" id="count"></span>
+    </div>
+
+    <main>
+      <div class="grid" id="grid"></div>
+      <div class="empty hidden" id="empty">No products match your filters.</div>
+    </main>
+
+    <script>
+      const products = [
+        {
+          id: 1,
+          name: "Pulse ANC Earbuds",
+          category: "audio",
+          price: 7999,
+          emoji: "🎧",
+          desc: "Active noise cancellation, 28h battery with case.",
+        },
+        {
+          id: 2,
+          name: "Aero Smartwatch",
+          category: "wearables",
+          price: 12499,
+          emoji: "⌚",
+          desc: "AMOLED display, SpO2, 50+ sport modes.",
+        },
+        {
+          id: 3,
+          name: "Lumen Desk Lamp",
+          category: "home",
+          price: 3499,
+          emoji: "💡",
+          desc: "Warm-to-cool tunable LED, touch dimmer.",
+        },
+        {
+          id: 4,
+          name: "Sonic Bar Mini",
+          category: "audio",
+          price: 4999,
+          emoji: "🔊",
+          desc: "Compact soundbar with Bluetooth 5.3.",
+        },
+        {
+          id: 5,
+          name: "Vertex Backpack",
+          category: "accessories",
+          price: 4299,
+          emoji: "🎒",
+          desc: 'Water-resistant, laptop sleeve up to 16".',
+        },
+        {
+          id: 6,
+          name: "Breeze Air Purifier",
+          category: "home",
+          price: 18999,
+          emoji: "🌬️",
+          desc: "HEPA H13, room size up to 400 sq ft.",
+        },
+        {
+          id: 7,
+          name: "Nimbus Fitness Band",
+          category: "wearables",
+          price: 2999,
+          emoji: "📿",
+          desc: "Heart rate, sleep tracking, 10-day battery.",
+        },
+        {
+          id: 8,
+          name: "Type-K Mechanical KB",
+          category: "accessories",
+          price: 8999,
+          emoji: "⌨️",
+          desc: "Hot-swappable switches, RGB, USB-C.",
+        },
+      ];
+
+      const grid = document.getElementById("grid");
+      const empty = document.getElementById("empty");
+      const countEl = document.getElementById("count");
+      const search = document.getElementById("search");
+      const category = document.getElementById("category");
+      const sort = document.getElementById("sort");
+      const maxPrice = document.getElementById("maxPrice");
+
+      function formatINR(n) {
+        return new Intl.NumberFormat("en-IN", {
+          style: "currency",
+          currency: "INR",
+          maximumFractionDigits: 0,
+        }).format(n);
+      }
+
+      function filterAndSort() {
+        const q = search.value.trim().toLowerCase();
+        const cat = category.value;
+        const max = Number(maxPrice.value);
+        let list = products.filter((p) => {
+          if (cat !== "all" && p.category !== cat) return false;
+          if (p.price > max) return false;
+          if (
+            q &&
+            !p.name.toLowerCase().includes(q) &&
+            !p.desc.toLowerCase().includes(q)
+          )
+            return false;
+          return true;
+        });
+
+        switch (sort.value) {
+          case "price-asc":
+            list.sort((a, b) => a.price - b.price);
+            break;
+          case "price-desc":
+            list.sort((a, b) => b.price - a.price);
+            break;
+          case "name":
+            list.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+          default:
+            break;
+        }
+        return list;
+      }
+
+      function render() {
+        const list = filterAndSort();
+        countEl.textContent = `${list.length} product${list.length !== 1 ? "s" : ""}`;
+        if (list.length === 0) {
+          grid.innerHTML = "";
+          empty.classList.remove("hidden");
+          return;
+        }
+        empty.classList.add("hidden");
+        grid.innerHTML = list
+          .map(
+            (p) => `
+        <article class="card">
+          <div class="card-img">${p.emoji}</div>
+          <div class="card-body">
+            <div class="card-cat">${p.category}</div>
+            <h2 class="card-title">${p.name}</h2>
+            <p class="card-desc">${p.desc}</p>
+            <div class="card-footer">
+              <span class="price">${formatINR(p.price)}</span>
+              <button type="button" class="btn" data-id="${p.id}">Add</button>
+            </div>
+          </div>
+        </article>
+      `,
+          )
+          .join("");
+
+        grid.querySelectorAll(".btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = Number(btn.dataset.id);
+            const p = products.find((x) => x.id === id);
+            alert(`Added "${p.name}" to cart (demo).`);
+          });
+        });
+      }
+
+      [search, category, sort, maxPrice].forEach((el) =>
+        el.addEventListener("input", render),
+      );
+      [category, sort, maxPrice].forEach((el) =>
+        el.addEventListener("change", render),
+      );
+      render();
+    </script>
+  </body>
+</html>

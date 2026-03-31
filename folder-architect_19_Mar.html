@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Folder Architect</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        line-height: 1.6;
+        padding: 2rem 1rem 4rem;
+      }
+      .wrap {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.6rem;
+        margin-bottom: 0.25rem;
+      }
+      .subtitle {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+      .card {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.25rem;
+      }
+      h2 {
+        font-size: 1.05rem;
+        color: #f8fafc;
+        margin-bottom: 0.5rem;
+      }
+      p {
+        color: #cbd5e1;
+        font-size: 0.92rem;
+        margin-bottom: 0.5rem;
+      }
+      ul {
+        margin: 0.5rem 0 0 1.25rem;
+        color: #94a3b8;
+        font-size: 0.88rem;
+      }
+      li {
+        margin-bottom: 0.25rem;
+      }
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+      }
+      pre.tree {
+        background: #020617;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 1rem;
+        font-family: ui-monospace, monospace;
+        font-size: 0.78rem;
+        color: #a5f3fc;
+        overflow-x: auto;
+        white-space: pre;
+      }
+      .btn-row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+      }
+      button {
+        background: #3b82f6;
+        color: #fff;
+        border: none;
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      button:hover {
+        background: #2563eb;
+      }
+      .toast {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #22c55e;
+        color: #fff;
+        padding: 0.6rem 1.25rem;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+      details {
+        margin-top: 0.5rem;
+      }
+      summary {
+        cursor: pointer;
+        color: #38bdf8;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .folder {
+        color: #fbbf24;
+      }
+      .file {
+        color: #86efac;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Folder Architect</h1>
+      <p class="subtitle">Assignment — 19th March 2026</p>
+
+      <div class="card">
+        <h2>Goal</h2>
+        <p>
+          Plan a clear folder layout for a full-stack web app before writing
+          code. Good structure keeps features easy to find, scales with team
+          size, and matches how build tools expect files to be organized.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Example: Vite + React (client) + Express API (server)</h2>
+        <pre class="mermaid">
+flowchart TB
+  subgraph root["project-root/"]
+    pkg["package.json"]
+    readme["README.md"]
+    env[".env.example"]
+    subgraph client["client/"]
+      cvite["vite.config.ts"]
+      cidx["index.html"]
+      subgraph src["src/"]
+        capp["App.tsx"]
+        cmain["main.tsx"]
+        subgraph comp["components/"]
+        end
+        subgraph pages["pages/"]
+        end
+        subgraph hooks["hooks/"]
+        end
+        subgraph lib["lib/"]
+        end
+        cassets["assets/"]
+      end
+    end
+    subgraph server["server/"]
+      sidx["index.js"]
+      subgraph routes["routes/"]
+      end
+      subgraph middleware["middleware/"]
+      end
+    end
+  end
+      </pre
+        >
+      </div>
+
+      <div class="card">
+        <h2>What each top-level area is for</h2>
+        <ul>
+          <li>
+            <strong>client/</strong> — Everything the browser runs (UI, styles,
+            client-side routing).
+          </li>
+          <li>
+            <strong>server/</strong> — HTTP API, auth, database access; no React
+            components here.
+          </li>
+          <li>
+            <strong>shared/</strong> (optional) — Types, validation schemas,
+            constants used by both sides.
+          </li>
+          <li>
+            <strong>docs/</strong> (optional) — Architecture notes, API
+            contracts, onboarding.
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Copyable folder tree (ASCII)</h2>
+        <pre class="tree" id="asciiTree">
+project-root/
+├── README.md
+├── .env.example
+├── package.json
+├── client/
+│   ├── index.html
+│   ├── vite.config.ts
+│   └── src/
+│       ├── main.tsx
+│       ├── App.tsx
+│       ├── assets/
+│       ├── components/
+│       │   ├── ui/
+│       │   └── layout/
+│       ├── pages/
+│       ├── hooks/
+│       └── lib/
+└── server/
+    ├── index.js
+    ├── routes/
+    ├── middleware/
+    └── config/</pre
+        >
+        <div class="btn-row">
+          <button type="button" id="copyTree">Copy tree to clipboard</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Rules of thumb</h2>
+        <details open>
+          <summary>Co-locate by feature when the app grows</summary>
+          <ul>
+            <li>
+              Instead of one giant <span class="folder">components/</span>, use
+              <span class="folder">features/cart/</span> with its own components
+              + hooks.
+            </li>
+          </ul>
+        </details>
+        <details>
+          <summary>Keep environment secrets out of Git</summary>
+          <ul>
+            <li>
+              Commit <span class="file">.env.example</span> with dummy keys;
+              real <span class="file">.env</span> stays local.
+            </li>
+          </ul>
+        </details>
+        <details>
+          <summary>One responsibility per folder</summary>
+          <ul>
+            <li>
+              <span class="folder">routes/</span> only wire URLs to handlers;
+              heavy logic lives in services or modules.
+            </li>
+          </ul>
+        </details>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">Copied!</div>
+
+    <script>
+      mermaid.initialize({ startOnLoad: true, theme: "dark" });
+      document
+        .getElementById("copyTree")
+        .addEventListener("click", async () => {
+          const text = document.getElementById("asciiTree").textContent;
+          try {
+            await navigator.clipboard.writeText(text);
+            const t = document.getElementById("toast");
+            t.classList.add("show");
+            setTimeout(() => t.classList.remove("show"), 2000);
+          } catch {
+            alert("Could not copy. Select the tree and copy manually.");
+          }
+        });
+    </script>
+  </body>
+</html>

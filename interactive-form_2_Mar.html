@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Form — Validation</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f1f5f9; color: #1e293b; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 2rem; }
+    .form-card { background: #fff; width: 100%; max-width: 460px; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); padding: 2rem; }
+    h1 { font-size: 1.4rem; text-align: center; margin-bottom: 0.25rem; }
+    .subtitle { text-align: center; color: #64748b; font-size: 0.85rem; margin-bottom: 1.5rem; }
+    .field { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.9rem; font-weight: 600; color: #334155; margin-bottom: 0.3rem; }
+    input, select, textarea { width: 100%; padding: 0.6rem 0.75rem; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; transition: border-color 0.2s; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #4f46e5; }
+    input.error, select.error, textarea.error { border-color: #ef4444; background: #fef2f2; }
+    input.valid, select.valid, textarea.valid { border-color: #22c55e; background: #f0fdf4; }
+    .error-msg { color: #ef4444; font-size: 0.8rem; margin-top: 0.2rem; min-height: 1.1rem; }
+    textarea { resize: vertical; min-height: 70px; }
+    button { width: 100%; padding: 0.7rem; background: #4f46e5; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 0.5rem; transition: background 0.2s; }
+    button:hover { background: #4338ca; }
+    .toast { position: fixed; top: 1.5rem; right: 1.5rem; padding: 0.85rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 500; color: #fff; opacity: 0; transform: translateY(-10px); transition: all 0.3s; z-index: 100; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { background: #16a34a; }
+    .toast.error { background: #dc2626; }
+  </style>
+</head>
+<body>
+  <div class="form-card">
+    <h1>Contact Form</h1>
+    <p class="subtitle">Assignment — 2nd March 2026</p>
+    <form id="contactForm" novalidate>
+      <div class="field">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder="John Doe">
+        <div class="error-msg" id="nameError"></div>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="john@example.com">
+        <div class="error-msg" id="emailError"></div>
+      </div>
+      <div class="field">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="9876543210">
+        <div class="error-msg" id="phoneError"></div>
+      </div>
+      <div class="field">
+        <label for="age">Age</label>
+        <input type="number" id="age" placeholder="20" min="1" max="120">
+        <div class="error-msg" id="ageError"></div>
+      </div>
+      <div class="field">
+        <label for="subject">Subject</label>
+        <select id="subject">
+          <option value="">Select a subject</option>
+          <option value="general">General Inquiry</option>
+          <option value="feedback">Feedback</option>
+          <option value="support">Support</option>
+        </select>
+        <div class="error-msg" id="subjectError"></div>
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" placeholder="Write your message..."></textarea>
+        <div class="error-msg" id="messageError"></div>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const rules = {
+      name:    { el: "name",    errEl: "nameError",    validate: v => v.trim().length >= 2 ? "" : "Name must be at least 2 characters" },
+      email:   { el: "email",   errEl: "emailError",   validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? "" : "Enter a valid email address" },
+      phone:   { el: "phone",   errEl: "phoneError",   validate: v => /^\d{10}$/.test(v.trim()) ? "" : "Phone must be exactly 10 digits" },
+      age:     { el: "age",     errEl: "ageError",     validate: v => { const n = Number(v); return n >= 1 && n <= 120 ? "" : "Age must be between 1 and 120"; } },
+      subject: { el: "subject", errEl: "subjectError", validate: v => v ? "" : "Please select a subject" },
+      message: { el: "message", errEl: "messageError", validate: v => v.trim().length >= 10 ? "" : "Message must be at least 10 characters" },
+    };
+
+    function showToast(msg, type) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = "toast " + type + " show";
+      setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    function validateField(key) {
+      const r = rules[key];
+      const input = document.getElementById(r.el);
+      const errDiv = document.getElementById(r.errEl);
+      const msg = r.validate(input.value);
+      errDiv.textContent = msg;
+      input.classList.toggle("error", !!msg);
+      input.classList.toggle("valid", !msg && input.value.length > 0);
+      return !msg;
+    }
+
+    Object.keys(rules).forEach(key => {
+      const input = document.getElementById(rules[key].el);
+      input.addEventListener("input", () => validateField(key));
+      input.addEventListener("blur",  () => validateField(key));
+    });
+
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      let allValid = true;
+      Object.keys(rules).forEach(key => {
+        if (!validateField(key)) allValid = false;
+      });
+      if (allValid) {
+        showToast("Form submitted successfully!", "success");
+        this.reset();
+        Object.keys(rules).forEach(key => {
+          const el = document.getElementById(rules[key].el);
+          el.classList.remove("valid", "error");
+          document.getElementById(rules[key].errEl).textContent = "";
+        });
+      } else {
+        showToast("Please fix the errors above.", "error");
+      }
+    });
+  </script>
+</body>
+</html>

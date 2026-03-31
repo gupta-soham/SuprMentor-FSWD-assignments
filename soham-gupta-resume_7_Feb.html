@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soham Gupta — Resume</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        line-height: 1.5;
+        color: #1a1a1a;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #f8f9fa;
+      }
+      .resume {
+        background: #fff;
+        padding: 2.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+      }
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: 1.75rem;
+        font-weight: 700;
+        text-align: center;
+      }
+      .contact {
+        color: #555;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+      .contact a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+      .contact a:hover {
+        text-decoration: underline;
+      }
+      .contact span {
+        margin: 0 0.35rem;
+        color: #ccc;
+      }
+      h2 {
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #374151;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.35rem;
+        margin: 1.5rem 0 0.75rem;
+      }
+      .education-item,
+      .job,
+      .project {
+        margin-bottom: 1rem;
+      }
+      .job-title,
+      .degree,
+      .project-name {
+        font-weight: 600;
+        font-size: 1rem;
+      }
+      .company,
+      .school,
+      .tech {
+        color: #6b7280;
+        font-size: 0.9rem;
+      }
+      .date,
+      .location {
+        color: #6b7280;
+        font-size: 0.85rem;
+      }
+      ul {
+        margin: 0.35rem 0 0;
+        padding-left: 1.25rem;
+      }
+      li {
+        margin-bottom: 0.25rem;
+      }
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 0.5rem 1.5rem;
+        font-size: 0.9rem;
+      }
+      .skills-grid strong {
+        display: block;
+        color: #374151;
+        margin-bottom: 0.2rem;
+      }
+      .achievements ul {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="resume">
+      <h1>Soham Gupta</h1>
+      <p class="contact">
+        <a href="mailto:soham.gupta003@gmail.com">soham.gupta003@gmail.com</a>
+        <span>|</span>
+        <a
+          href="https://linkedin.com/in/soham-gupta-in"
+          target="_blank"
+          rel="noopener"
+          >linkedIn/soham-gupta-in</a
+        >
+        <span>|</span>
+        <a href="https://github.com/gupta-soham" target="_blank" rel="noopener"
+          >github/gupta-soham</a
+        >
+        <span>|</span>
+        <a href="https://sohamgupta.vercel.app" target="_blank" rel="noopener"
+          >Portfolio</a
+        >
+      </p>
+
+      <h2>Education</h2>
+      <div class="education-item">
+        <div class="degree">B.E. Information Science and Engineering</div>
+        <div class="school">Sir M Visvesvaraya Institute Of Technology</div>
+        <div class="date">Bangalore, IN | 2022–2026</div>
+      </div>
+
+      <h2>Skills</h2>
+      <div class="skills-grid">
+        <div>
+          <strong>Languages</strong> JavaScript, TypeScript, Java, C/C++, SQL,
+          Bash, Python
+        </div>
+        <div>
+          <strong>Frameworks</strong> React, Next.js, Express.js, Node.js,
+          Monorepo
+        </div>
+        <div>
+          <strong>Frontend</strong> Tailwind CSS, Framer Motion, Recoil,
+          Zustand, TanStack Query
+        </div>
+        <div>
+          <strong>Backend & APIs</strong> tRPC, REST, WebSocket, OAuth, JWT
+        </div>
+        <div>
+          <strong>Databases & ORM</strong> PostgreSQL, MongoDB, Prisma,
+          Mongoose, DynamoDB
+        </div>
+        <div>
+          <strong>Caching & Messaging</strong> Redis, Apache Kafka, AWS SNS/SQS
+        </div>
+        <div>
+          <strong>DevOps & Cloud</strong> Docker, Git, AWS (ECS, Fargate, ECR,
+          EC2, S3, RDS)
+        </div>
+        <div><strong>API & Data</strong> OpenAPI/Swagger, RESTful, GraphQL</div>
+      </div>
+
+      <h2>Work Experience</h2>
+      <div class="job">
+        <div class="job-title">SDE Intern · SHANKH TECHNOLOGIES</div>
+        <div class="date">Bangalore, India | Feb 2025 – May 2025</div>
+        <ul>
+          <li>
+            Enabled auto-scaling from 2 to 10 tasks to accommodate variable load
+            by deploying Dockerized microservices on AWS ECS Fargate with 2
+            Application Load Balancers.
+          </li>
+          <li>
+            Supported messaging throughput of 50K msgs/min by architecting
+            pipeline with AWS SNS, SQS and Apache Kafka.
+          </li>
+          <li>
+            Enabled automated deployments by implementing CI/CD with GitHub
+            Actions and AWS ECR.
+          </li>
+        </ul>
+      </div>
+      <div class="job">
+        <div class="job-title">Google Summer of Code · VIDEOLAN</div>
+        <div class="date">Remote, India | May 2023 – Aug 2023</div>
+        <ul>
+          <li>
+            Reduced streaming latency by 40% for 2B+ users by implementing
+            HEVC/H.265 support and optimizing Chromecast module.
+          </li>
+          <li>
+            Achieved 100% audio-video synchronization by developing subtitle
+            blending for 3 formats (SRT, WebVTT, ASS) and fixing critical
+            transcoding bugs.
+          </li>
+        </ul>
+      </div>
+
+      <h2>Projects</h2>
+      <div class="project">
+        <div class="project-name">Huntify — AI Job Assistant</div>
+        <div class="tech">
+          Next.js, React, PostgreSQL, Drizzle ORM, Google AI SDK, Clerk Auth
+        </div>
+        <ul>
+          <li>
+            Enhanced job application efficiency by architecting 5 AI-powered
+            features using Google AI SDK, Cheerio web scraping, and LaTeX
+            templating, resulting in 80% faster creation and 90% content
+            relevance.
+          </li>
+          <li>
+            Improved user experience by implementing streaming AI responses and
+            credit-based billing system with Drizzle ORM, achieving &lt;500ms
+            response times and real-time tracking.
+          </li>
+        </ul>
+      </div>
+      <div class="project">
+        <div class="project-name">RepoGPT</div>
+        <div class="tech">
+          Next.js, tRPC, Prisma, Octokit, LangChain, Google Gemini AI, TanStack
+          Query, RAG
+        </div>
+        <ul>
+          <li>
+            Improved code comprehension speed by 70% and achieved 95% retrieval
+            accuracy by engineering a RAG pipeline with tRPC, TanStack Query,
+            LangChain and Google Gemini AI.
+          </li>
+          <li>
+            Enabled real-time meeting insights by architecting type-safe tRPC
+            endpoints, TanStack Query and Prisma ORM for subscription and data
+            management.
+          </li>
+        </ul>
+      </div>
+      <div class="project">
+        <div class="project-name">Crypt — Anonymous Community</div>
+        <div class="tech">Next.js, Redis, Prisma, NextAuth, Editor.js</div>
+        <ul>
+          <li>
+            Reduced initial load time by 70% for a growing user base by
+            engineering infinite scrolling with Redis caching and optimistic
+            updates.
+          </li>
+          <li>
+            Ensured 99.9% uptime for seamless academic discussions by
+            implementing secure authentication with NextAuth and a rich-text
+            editor supporting 5 content types.
+          </li>
+        </ul>
+      </div>
+
+      <h2>Achievements</h2>
+      <div class="achievements">
+        <ul>
+          <li>
+            Selected as C4GT Campus Leader and Open Source Ambassador at
+            college, mentoring 75+ students in government tech initiatives while
+            organizing 3 technical workshops.
+          </li>
+          <li>
+            Secured third place in first hackathon by developing a malware
+            detector and contributed to 10+ open source projects during
+            Hacktoberfest and HackSquad ’23 & ’24, placing in top 2% of global
+            participants.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>

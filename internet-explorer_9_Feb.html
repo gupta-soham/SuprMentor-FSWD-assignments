@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Internet Explorer — Client-Server Architecture</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        line-height: 1.6;
+        color: #1a1a1a;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: #f0f4f8;
+      }
+      .card {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+        margin-bottom: 2rem;
+      }
+      h1 {
+        text-align: center;
+        font-size: 1.6rem;
+        margin: 0 0 0.25rem;
+      }
+      .subtitle {
+        text-align: center;
+        color: #6b7280;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+      h2 {
+        font-size: 1.15rem;
+        color: #374151;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.3rem;
+        margin: 1.25rem 0 0.75rem;
+      }
+      p {
+        margin: 0.5rem 0;
+      }
+      ol,
+      ul {
+        margin: 0.5rem 0;
+        padding-left: 1.5rem;
+      }
+      li {
+        margin-bottom: 0.3rem;
+      }
+      .mermaid {
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+      }
+      strong {
+        color: #111;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Internet Explorer</h1>
+      <p class="subtitle">Assignment — 9th February 2026</p>
+
+      <!-- ──────────────────────────────────────── -->
+      <h2>1. Client-Server Architecture</h2>
+      <p>
+        The <strong>client-server model</strong> is the foundational
+        architecture of the web. The <strong>client</strong> (typically a
+        browser) sends requests to a remote <strong>server</strong>, which
+        processes them and returns the appropriate response.
+      </p>
+
+      <pre class="mermaid">
+graph LR
+  subgraph Client Side
+    A["🖥️ User's Browser<br/>(Client)"]
+  end
+
+  subgraph Internet
+    B["🌐 DNS Server"]
+  end
+
+  subgraph Server Side
+    C["🔀 Load Balancer"]
+    D["⚙️ Web Server<br/>(Nginx / Apache)"]
+    E["🧠 Application Server<br/>(Node.js / Java)"]
+    F["🗄️ Database<br/>(PostgreSQL / MongoDB)"]
+  end
+
+  A -- "1. DNS Query<br/>(domain → IP)" --> B
+  B -- "2. IP Address" --> A
+  A -- "3. HTTP/HTTPS Request" --> C
+  C --> D
+  D --> E
+  E <--> F
+  E -- "4. HTTP Response<br/>(HTML, CSS, JS, JSON)" --> A
+    </pre>
+
+      <p><strong>Components explained:</strong></p>
+      <ul>
+        <li>
+          <strong>Client (Browser):</strong> Initiates requests, renders
+          HTML/CSS, executes JavaScript.
+        </li>
+        <li>
+          <strong>DNS Server:</strong> Translates human-readable domain names
+          (e.g. google.com) into IP addresses.
+        </li>
+        <li>
+          <strong>Load Balancer:</strong> Distributes incoming traffic across
+          multiple servers for reliability.
+        </li>
+        <li>
+          <strong>Web Server:</strong> Handles HTTP connections, serves static
+          files, and proxies to the application server.
+        </li>
+        <li>
+          <strong>Application Server:</strong> Runs business logic, processes
+          data, calls APIs.
+        </li>
+        <li>
+          <strong>Database:</strong> Stores and retrieves persistent application
+          data.
+        </li>
+      </ul>
+
+      <!-- ──────────────────────────────────────── -->
+      <h2>2. What Happens When You Open a Website</h2>
+      <p>
+        Below is the step-by-step sequence that occurs from the moment you type
+        a URL (e.g. <code>https://www.example.com</code>) into the browser until
+        the page is displayed.
+      </p>
+
+      <pre class="mermaid">
+sequenceDiagram
+  participant User as 🧑 User
+  participant Browser as 🖥️ Browser
+  participant DNS as 🌐 DNS Server
+  participant Server as ⚙️ Web Server
+  participant App as 🧠 App Server
+  participant DB as 🗄️ Database
+
+  User->>Browser: 1. Types URL & presses Enter
+  Browser->>Browser: 2. Parses URL (protocol, domain, path)
+  Browser->>DNS: 3. DNS Lookup — "What is the IP of example.com?"
+  DNS-->>Browser: 4. Returns IP address (e.g. 93.184.216.34)
+
+  Browser->>Server: 5. TCP Handshake (SYN → SYN-ACK → ACK)
+  Browser->>Server: 6. TLS/SSL Handshake (for HTTPS)
+  Browser->>Server: 7. Sends HTTP GET Request
+
+  Server->>App: 8. Forwards request to application logic
+  App->>DB: 9. Queries database (if needed)
+  DB-->>App: 10. Returns data
+  App-->>Server: 11. Generates HTTP Response (HTML)
+
+  Server-->>Browser: 12. Sends HTTP Response (status 200 + HTML)
+  Browser->>Browser: 13. Parses HTML, requests CSS/JS/images
+  Browser->>Server: 14. Fetches additional resources
+  Server-->>Browser: 15. Returns CSS, JS, images
+  Browser->>Browser: 16. Renders page & executes JavaScript
+  Browser-->>User: 17. Displays the fully loaded webpage
+    </pre
+      >
+
+      <!-- ──────────────────────────────────────── -->
+      <h2>3. Step-by-Step Explanation</h2>
+      <ol>
+        <li>
+          <strong>URL Entry:</strong> The user types a URL (e.g.
+          <code>https://www.example.com</code>) into the address bar and presses
+          Enter.
+        </li>
+        <li>
+          <strong>URL Parsing:</strong> The browser extracts the protocol
+          (<code>https</code>), domain (<code>www.example.com</code>), and path
+          (<code>/</code>).
+        </li>
+        <li>
+          <strong>DNS Resolution:</strong> The browser queries a DNS server to
+          translate the domain name into a numeric IP address.
+        </li>
+        <li>
+          <strong>IP Response:</strong> The DNS server responds with the IP
+          address of the target server.
+        </li>
+        <li>
+          <strong>TCP Handshake:</strong> A three-way handshake (SYN → SYN-ACK →
+          ACK) establishes a reliable connection between the browser and the
+          server.
+        </li>
+        <li>
+          <strong>TLS/SSL Handshake:</strong> For HTTPS, an additional handshake
+          negotiates encryption keys to secure the connection.
+        </li>
+        <li>
+          <strong>HTTP Request:</strong> The browser sends an HTTP GET request
+          to the server, including headers like <code>Host</code>,
+          <code>User-Agent</code>, and <code>Accept</code>.
+        </li>
+        <li>
+          <strong>Server Processing:</strong> The web server receives the
+          request and forwards it to the application server for business logic.
+        </li>
+        <li>
+          <strong>Database Query:</strong> If dynamic data is needed, the
+          application server queries the database.
+        </li>
+        <li>
+          <strong>Data Response:</strong> The database returns the requested
+          data to the application server.
+        </li>
+        <li>
+          <strong>Response Generation:</strong> The application server generates
+          the HTML response and sends it back through the web server.
+        </li>
+        <li>
+          <strong>HTTP Response:</strong> The server sends an HTTP response
+          (status code 200 OK) containing the HTML document.
+        </li>
+        <li>
+          <strong>HTML Parsing:</strong> The browser parses the HTML and
+          identifies additional resources (CSS, JS, images) that need to be
+          fetched.
+        </li>
+        <li>
+          <strong>Resource Fetching:</strong> The browser sends additional HTTP
+          requests for stylesheets, scripts, and images.
+        </li>
+        <li>
+          <strong>Resources Received:</strong> The server returns all the
+          requested static assets.
+        </li>
+        <li>
+          <strong>Rendering:</strong> The browser constructs the DOM, applies
+          CSS styles, and executes JavaScript to render the page.
+        </li>
+        <li>
+          <strong>Page Displayed:</strong> The fully rendered webpage is
+          displayed to the user.
+        </li>
+      </ol>
+
+      <!-- ──────────────────────────────────────── -->
+      <h2>4. Key Protocols Involved</h2>
+
+      <pre class="mermaid">
+graph TD
+  subgraph Protocols
+    HTTP["HTTP/HTTPS<br/>Application Layer<br/>Transfers web content"]
+    TCP["TCP<br/>Transport Layer<br/>Reliable delivery"]
+    IP["IP<br/>Network Layer<br/>Routing & addressing"]
+    DNS2["DNS<br/>Resolves domain → IP"]
+    TLS["TLS/SSL<br/>Encryption &amp; Security"]
+  end
+
+  HTTP --> TCP
+  TCP --> IP
+  DNS2 -.-> IP
+  TLS -.-> HTTP
+    </pre>
+
+      <ul>
+        <li>
+          <strong>HTTP/HTTPS:</strong> Application-layer protocol for
+          transferring web content. HTTPS adds encryption via TLS.
+        </li>
+        <li>
+          <strong>TCP:</strong> Transport-layer protocol ensuring reliable,
+          ordered data delivery through connections.
+        </li>
+        <li>
+          <strong>IP:</strong> Network-layer protocol responsible for addressing
+          and routing packets across networks.
+        </li>
+        <li>
+          <strong>DNS:</strong> Translates human-readable domain names into
+          machine-readable IP addresses.
+        </li>
+        <li>
+          <strong>TLS/SSL:</strong> Provides encryption, authentication, and
+          data integrity for secure communications.
+        </li>
+      </ul>
+    </div>
+
+    <script>
+      mermaid.initialize({ startOnLoad: true, theme: "default" });
+    </script>
+  </body>
+</html>

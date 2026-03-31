@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Console Challenge — JavaScript Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        line-height: 1.6;
+        color: #1e293b;
+        background: #f1f5f9;
+        padding: 2rem 1.5rem;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 1.6rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+      }
+
+      .instruction {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 2rem;
+        font-size: 0.9rem;
+        color: #92400e;
+      }
+
+      .instruction strong {
+        color: #78350f;
+      }
+
+      .instruction kbd {
+        background: #fef3c7;
+        border: 1px solid #fcd34d;
+        border-radius: 4px;
+        padding: 0.1rem 0.4rem;
+        font-family: "Fira Code", monospace;
+        font-size: 0.85rem;
+      }
+
+      .program {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        overflow: hidden;
+      }
+
+      .program-header {
+        background: #f8fafc;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .program-header h2 {
+        font-size: 1rem;
+        color: #1e293b;
+      }
+
+      .badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.2rem 0.65rem;
+        border-radius: 20px;
+        background: #eef2ff;
+        color: #4f46e5;
+      }
+
+      .program-body {
+        padding: 1.25rem;
+      }
+
+      .program-body p {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin-bottom: 0.75rem;
+      }
+
+      pre {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 1.25rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: "Fira Code", monospace;
+        font-size: 0.85rem;
+        line-height: 1.7;
+      }
+
+      .comment {
+        color: #64748b;
+      }
+      .keyword {
+        color: #c084fc;
+      }
+      .string {
+        color: #86efac;
+      }
+      .func {
+        color: #67e8f9;
+      }
+      .number {
+        color: #fca5a5;
+      }
+      .output {
+        background: #1e293b;
+        border-left: 3px solid #4f46e5;
+        padding: 0.75rem 1rem;
+        border-radius: 0 6px 6px 0;
+        margin-top: 0.75rem;
+        font-family: "Fira Code", monospace;
+        font-size: 0.82rem;
+        color: #86efac;
+      }
+
+      .output-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #94a3b8;
+        margin-top: 0.75rem;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Console Challenge</h1>
+      <p class="subtitle">
+        JavaScript Calculator Operations — Browser Console Programs
+      </p>
+
+      <div class="instruction">
+        <strong>How to run:</strong> Open your browser, press <kbd>F12</kbd> (or
+        <kbd>Ctrl+Shift+J</kbd>), go to the <strong>Console</strong> tab, paste
+        any code block below, and press <kbd>Enter</kbd>.
+      </div>
+
+      <!-- Program 1 -->
+      <div class="program">
+        <div class="program-header">
+          <h2>1. Basic Arithmetic Operations</h2>
+          <span class="badge">Fundamentals</span>
+        </div>
+        <div class="program-body">
+          <p>
+            Performs addition, subtraction, multiplication, and division on two
+            numbers.
+          </p>
+          <pre>
+<span class="keyword">let</span> a = <span class="number">24</span>;
+<span class="keyword">let</span> b = <span class="number">6</span>;
+
+<span class="func">console.log</span>(<span class="string">"Addition:"</span>,       a + b);
+<span class="func">console.log</span>(<span class="string">"Subtraction:"</span>,    a - b);
+<span class="func">console.log</span>(<span class="string">"Multiplication:"</span>, a * b);
+<span class="func">console.log</span>(<span class="string">"Division:"</span>,       a / b);
+<span class="func">console.log</span>(<span class="string">"Modulus:"</span>,        a % b);
+</pre>
+          <p class="output-label">Expected Output</p>
+          <div class="output">
+            Addition: 30<br />
+            Subtraction: 18<br />
+            Multiplication: 144<br />
+            Division: 4<br />
+            Modulus: 0
+          </div>
+        </div>
+      </div>
+
+      <!-- Program 2 -->
+      <div class="program">
+        <div class="program-header">
+          <h2>2. Calculator with Functions</h2>
+          <span class="badge">Functions</span>
+        </div>
+        <div class="program-body">
+          <p>Reusable functions for each arithmetic operation.</p>
+          <pre>
+<span class="keyword">function</span> <span class="func">add</span>(x, y)      { <span class="keyword">return</span> x + y; }
+<span class="keyword">function</span> <span class="func">subtract</span>(x, y) { <span class="keyword">return</span> x - y; }
+<span class="keyword">function</span> <span class="func">multiply</span>(x, y) { <span class="keyword">return</span> x * y; }
+<span class="keyword">function</span> <span class="func">divide</span>(x, y) {
+  <span class="keyword">if</span> (y === <span class="number">0</span>) <span class="keyword">return</span> <span class="string">"Error: Division by zero"</span>;
+  <span class="keyword">return</span> x / y;
+}
+
+<span class="func">console.log</span>(<span class="string">"add(10, 5) ="</span>,      <span class="func">add</span>(<span class="number">10</span>, <span class="number">5</span>));
+<span class="func">console.log</span>(<span class="string">"subtract(10, 5) ="</span>, <span class="func">subtract</span>(<span class="number">10</span>, <span class="number">5</span>));
+<span class="func">console.log</span>(<span class="string">"multiply(10, 5) ="</span>, <span class="func">multiply</span>(<span class="number">10</span>, <span class="number">5</span>));
+<span class="func">console.log</span>(<span class="string">"divide(10, 5) ="</span>,   <span class="func">divide</span>(<span class="number">10</span>, <span class="number">5</span>));
+<span class="func">console.log</span>(<span class="string">"divide(10, 0) ="</span>,   <span class="func">divide</span>(<span class="number">10</span>, <span class="number">0</span>));
+</pre>
+          <p class="output-label">Expected Output</p>
+          <div class="output">
+            add(10, 5) = 15<br />
+            subtract(10, 5) = 5<br />
+            multiply(10, 5) = 50<br />
+            divide(10, 5) = 2<br />
+            divide(10, 0) = Error: Division by zero
+          </div>
+        </div>
+      </div>
+
+      <!-- Program 3 -->
+      <div class="program">
+        <div class="program-header">
+          <h2>3. Calculator using Switch-Case</h2>
+          <span class="badge">Control Flow</span>
+        </div>
+        <div class="program-body">
+          <p>
+            Uses a switch statement to select the operation based on an operator
+            string.
+          </p>
+          <pre>
+<span class="keyword">function</span> <span class="func">calculate</span>(num1, operator, num2) {
+  <span class="keyword">switch</span> (operator) {
+    <span class="keyword">case</span> <span class="string">"+"</span>: <span class="keyword">return</span> num1 + num2;
+    <span class="keyword">case</span> <span class="string">"-"</span>: <span class="keyword">return</span> num1 - num2;
+    <span class="keyword">case</span> <span class="string">"*"</span>: <span class="keyword">return</span> num1 * num2;
+    <span class="keyword">case</span> <span class="string">"/"</span>:
+      <span class="keyword">if</span> (num2 === <span class="number">0</span>) <span class="keyword">return</span> <span class="string">"Error: Division by zero"</span>;
+      <span class="keyword">return</span> num1 / num2;
+    <span class="keyword">default</span>: <span class="keyword">return</span> <span class="string">"Error: Invalid operator"</span>;
+  }
+}
+
+<span class="func">console.log</span>(<span class="string">"15 + 3 ="</span>, <span class="func">calculate</span>(<span class="number">15</span>, <span class="string">"+"</span>, <span class="number">3</span>));
+<span class="func">console.log</span>(<span class="string">"15 - 3 ="</span>, <span class="func">calculate</span>(<span class="number">15</span>, <span class="string">"-"</span>, <span class="number">3</span>));
+<span class="func">console.log</span>(<span class="string">"15 * 3 ="</span>, <span class="func">calculate</span>(<span class="number">15</span>, <span class="string">"*"</span>, <span class="number">3</span>));
+<span class="func">console.log</span>(<span class="string">"15 / 3 ="</span>, <span class="func">calculate</span>(<span class="number">15</span>, <span class="string">"/"</span>, <span class="number">3</span>));
+<span class="func">console.log</span>(<span class="string">"15 ^ 3 ="</span>, <span class="func">calculate</span>(<span class="number">15</span>, <span class="string">"^"</span>, <span class="number">3</span>));
+</pre>
+          <p class="output-label">Expected Output</p>
+          <div class="output">
+            15 + 3 = 18<br />
+            15 - 3 = 12<br />
+            15 * 3 = 45<br />
+            15 / 3 = 5<br />
+            15 ^ 3 = Error: Invalid operator
+          </div>
+        </div>
+      </div>
+
+      <!-- Program 4 -->
+      <div class="program">
+        <div class="program-header">
+          <h2>4. Interactive Calculator with prompt()</h2>
+          <span class="badge">User Input</span>
+        </div>
+        <div class="program-body">
+          <p>Takes user input via browser prompts and computes the result.</p>
+          <pre>
+<span class="keyword">let</span> num1     = <span class="func">parseFloat</span>(<span class="func">prompt</span>(<span class="string">"Enter first number:"</span>));
+<span class="keyword">let</span> operator = <span class="func">prompt</span>(<span class="string">"Enter operator (+, -, *, /):"</span>);
+<span class="keyword">let</span> num2     = <span class="func">parseFloat</span>(<span class="func">prompt</span>(<span class="string">"Enter second number:"</span>));
+
+<span class="keyword">let</span> result;
+<span class="keyword">switch</span> (operator) {
+  <span class="keyword">case</span> <span class="string">"+"</span>: result = num1 + num2; <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">"-"</span>: result = num1 - num2; <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">"*"</span>: result = num1 * num2; <span class="keyword">break</span>;
+  <span class="keyword">case</span> <span class="string">"/"</span>:
+    result = num2 !== <span class="number">0</span> ? num1 / num2 : <span class="string">"Error: Division by zero"</span>;
+    <span class="keyword">break</span>;
+  <span class="keyword">default</span>: result = <span class="string">"Invalid operator"</span>;
+}
+
+<span class="func">console.log</span>(<span class="string">`${num1} ${operator} ${num2} = ${result}`</span>);
+</pre>
+          <p class="output-label">Sample Output (for inputs: 8, *, 7)</p>
+          <div class="output">8 * 7 = 56</div>
+        </div>
+      </div>
+
+      <!-- Program 5 -->
+      <div class="program">
+        <div class="program-header">
+          <h2>5. Advanced: Power, Square Root & Percentage</h2>
+          <span class="badge">Math Object</span>
+        </div>
+        <div class="program-body">
+          <p>
+            Uses the built-in Math object for advanced calculator operations.
+          </p>
+          <pre>
+<span class="keyword">function</span> <span class="func">power</span>(base, exp) {
+  <span class="keyword">return</span> Math.<span class="func">pow</span>(base, exp);
+}
+
+<span class="keyword">function</span> <span class="func">squareRoot</span>(n) {
+  <span class="keyword">if</span> (n < <span class="number">0</span>) <span class="keyword">return</span> <span class="string">"Error: Negative input"</span>;
+  <span class="keyword">return</span> Math.<span class="func">sqrt</span>(n);
+}
+
+<span class="keyword">function</span> <span class="func">percentage</span>(value, total) {
+  <span class="keyword">return</span> (value / total) * <span class="number">100</span>;
+}
+
+<span class="func">console.log</span>(<span class="string">"2 ^ 10 ="</span>,          <span class="func">power</span>(<span class="number">2</span>, <span class="number">10</span>));
+<span class="func">console.log</span>(<span class="string">"sqrt(144) ="</span>,       <span class="func">squareRoot</span>(<span class="number">144</span>));
+<span class="func">console.log</span>(<span class="string">"sqrt(-4) ="</span>,        <span class="func">squareRoot</span>(-<span class="number">4</span>));
+<span class="func">console.log</span>(<span class="string">"45 out of 60 ="</span>,    <span class="func">percentage</span>(<span class="number">45</span>, <span class="number">60</span>) + <span class="string">"%"</span>);
+</pre>
+          <p class="output-label">Expected Output</p>
+          <div class="output">
+            2 ^ 10 = 1024<br />
+            sqrt(144) = 12<br />
+            sqrt(-4) = Error: Negative input<br />
+            45 out of 60 = 75%
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive Hero Page — Flexbox Landing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        color: #1e293b;
+        line-height: 1.6;
+      }
+
+      /* ── Navigation ── */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: #fff;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .logo {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #4f46e5;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 1.5rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: #475569;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+
+      .nav-links a:hover {
+        color: #4f46e5;
+      }
+
+      .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .menu-toggle span {
+        display: block;
+        width: 24px;
+        height: 2.5px;
+        background: #1e293b;
+        border-radius: 2px;
+        transition: 0.3s;
+      }
+
+      /* ── Hero Section ── */
+      .hero {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 3rem;
+        padding: 5rem 3rem;
+        min-height: 85vh;
+        background: linear-gradient(
+          135deg,
+          #eef2ff 0%,
+          #faf5ff 50%,
+          #fef2f2 100%
+        );
+      }
+
+      .hero-text {
+        flex: 1;
+        max-width: 550px;
+      }
+
+      .hero-text h1 {
+        font-size: 2.75rem;
+        font-weight: 700;
+        line-height: 1.2;
+        color: #0f172a;
+        margin-bottom: 1rem;
+      }
+
+      .hero-text h1 span {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-text p {
+        font-size: 1.1rem;
+        color: #64748b;
+        margin-bottom: 2rem;
+        max-width: 480px;
+      }
+
+      .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.75rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+        border-radius: 8px;
+        text-decoration: none;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        cursor: pointer;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: #fff;
+        border: none;
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 8px 24px rgba(79, 70, 229, 0.35);
+      }
+
+      .btn-secondary {
+        background: #fff;
+        color: #4f46e5;
+        border: 2px solid #c7d2fe;
+      }
+
+      .btn-secondary:hover {
+        border-color: #4f46e5;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+      }
+
+      .hero-visual {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 420px;
+      }
+
+      .hero-graphic {
+        width: 100%;
+        aspect-ratio: 1;
+        background: linear-gradient(
+          135deg,
+          #c7d2fe 0%,
+          #ddd6fe 50%,
+          #fecaca 100%
+        );
+        border-radius: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 5rem;
+        box-shadow: 0 20px 60px rgba(79, 70, 229, 0.15);
+      }
+
+      /* ── Features Section ── */
+      .features {
+        padding: 4rem 3rem;
+        background: #fff;
+      }
+
+      .features h2 {
+        text-align: center;
+        font-size: 1.75rem;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+      }
+
+      .features .subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 1rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .features-grid {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .feature-card {
+        flex: 1 1 250px;
+        max-width: 320px;
+        padding: 1.5rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        text-align: center;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+      }
+
+      .feature-icon {
+        font-size: 2.25rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1.05rem;
+        margin-bottom: 0.4rem;
+        color: #1e293b;
+      }
+
+      .feature-card p {
+        font-size: 0.9rem;
+        color: #64748b;
+      }
+
+      /* ── Footer ── */
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        font-size: 0.85rem;
+        color: #94a3b8;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+      }
+
+      /* ── Responsive: Tablet (≤768px) ── */
+      @media (max-width: 768px) {
+        .hero {
+          flex-direction: column;
+          text-align: center;
+          padding: 3rem 1.5rem;
+          min-height: auto;
+        }
+
+        .hero-text {
+          max-width: 100%;
+        }
+
+        .hero-text h1 {
+          font-size: 2rem;
+        }
+
+        .hero-text p {
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .hero-buttons {
+          justify-content: center;
+        }
+
+        .hero-visual {
+          max-width: 280px;
+          order: -1;
+        }
+
+        .hero-graphic {
+          font-size: 3.5rem;
+        }
+
+        .features {
+          padding: 3rem 1.5rem;
+        }
+      }
+
+      /* ── Responsive: Mobile (≤480px) ── */
+      @media (max-width: 480px) {
+        .nav-links {
+          display: none;
+        }
+
+        .nav-links.open {
+          display: flex;
+          flex-direction: column;
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background: #fff;
+          padding: 1rem 2rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          gap: 0.75rem;
+        }
+
+        .menu-toggle {
+          display: flex;
+        }
+
+        .hero {
+          padding: 2rem 1rem;
+          gap: 1.5rem;
+        }
+
+        .hero-text h1 {
+          font-size: 1.6rem;
+        }
+
+        .hero-text p {
+          font-size: 0.95rem;
+        }
+
+        .hero-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .btn {
+          width: 100%;
+          text-align: center;
+        }
+
+        .features-grid {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .feature-card {
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo">DevLaunch</div>
+      <button
+        class="menu-toggle"
+        onclick="document.querySelector('.nav-links').classList.toggle('open')"
+      >
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#hero">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero" id="hero">
+      <div class="hero-text">
+        <h1>Build Something<br /><span>Amazing Today</span></h1>
+        <p>
+          Launch your ideas faster with modern web development tools. Clean
+          code, responsive design, and great user experiences — all in one
+          place.
+        </p>
+        <div class="hero-buttons">
+          <a href="#features" class="btn btn-primary">Get Started</a>
+          <a href="#contact" class="btn btn-secondary">Learn More</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-graphic">&#128640;</div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <h2>Why Choose Us</h2>
+      <p class="subtitle">Everything you need to ship products faster</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#9889;</div>
+          <h3>Lightning Fast</h3>
+          <p>
+            Optimized builds and instant hot-reload for a smooth development
+            workflow.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128241;</div>
+          <h3>Fully Responsive</h3>
+          <p>
+            Adapts beautifully to every screen size — desktop, tablet, and
+            mobile.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128274;</div>
+          <h3>Secure by Default</h3>
+          <p>
+            Built-in authentication, encryption, and best-practice security
+            patterns.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer id="contact">
+      <p>&copy; 2026 DevLaunch. Built with Flexbox &amp; responsive CSS.</p>
+    </footer>
+  </body>
+</html>

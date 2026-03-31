@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Signup Form — React Validations</title>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const strengthLevels = [
+      { label: "Very Weak", color: "#ef4444", width: "20%" },
+      { label: "Weak",      color: "#f97316", width: "40%" },
+      { label: "Fair",      color: "#f59e0b", width: "60%" },
+      { label: "Strong",    color: "#22c55e", width: "80%" },
+      { label: "Very Strong", color: "#16a34a", width: "100%" },
+    ];
+
+    function getPasswordStrength(pw) {
+      let score = 0;
+      if (pw.length >= 8) score++;
+      if (/[a-z]/.test(pw) && /[A-Z]/.test(pw)) score++;
+      if (/\d/.test(pw)) score++;
+      if (/[^a-zA-Z0-9]/.test(pw)) score++;
+      if (pw.length >= 12) score++;
+      return Math.min(score, 4);
+    }
+
+    function PasswordStrengthBar({ password }) {
+      if (!password) return null;
+      const idx = getPasswordStrength(password);
+      const level = strengthLevels[idx];
+      return (
+        <div style={{ marginTop: "0.4rem" }}>
+          <div style={{ height: 6, background: "#e2e8f0", borderRadius: 3, overflow: "hidden" }}>
+            <div style={{
+              height: "100%", width: level.width, background: level.color,
+              borderRadius: 3, transition: "all 0.3s",
+            }} />
+          </div>
+          <span style={{ fontSize: "0.75rem", color: level.color, fontWeight: 600 }}>
+            {level.label}
+          </span>
+        </div>
+      );
+    }
+
+    function PasswordChecklist({ password }) {
+      const rules = [
+        { label: "At least 8 characters", pass: password.length >= 8 },
+        { label: "Uppercase letter", pass: /[A-Z]/.test(password) },
+        { label: "Lowercase letter", pass: /[a-z]/.test(password) },
+        { label: "A number", pass: /\d/.test(password) },
+        { label: "Special character (!@#$...)", pass: /[^a-zA-Z0-9]/.test(password) },
+      ];
+      if (!password) return null;
+      return (
+        <ul style={{ listStyle: "none", padding: 0, margin: "0.4rem 0 0" }}>
+          {rules.map(r => (
+            <li key={r.label} style={{
+              fontSize: "0.78rem", color: r.pass ? "#16a34a" : "#94a3b8",
+              display: "flex", alignItems: "center", gap: "0.3rem", marginBottom: "0.15rem",
+            }}>
+              <span>{r.pass ? "✓" : "○"}</span> {r.label}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    function InputField({ label, type, value, onChange, error, children }) {
+      return (
+        <div style={{ marginBottom: "1rem" }}>
+          <label style={{ display: "block", fontSize: "0.9rem", fontWeight: 600, color: "#334155", marginBottom: "0.3rem" }}>
+            {label}
+          </label>
+          <input
+            type={type} value={value} onChange={onChange}
+            style={{
+              width: "100%", padding: "0.65rem 0.85rem",
+              border: `2px solid ${error ? "#ef4444" : "#e2e8f0"}`,
+              borderRadius: 10, fontSize: "0.9rem", outline: "none",
+              fontFamily: "inherit", transition: "border 0.2s",
+              background: error ? "#fef2f2" : "#fff",
+            }}
+            onFocus={e => { if (!error) e.target.style.borderColor = "#4f46e5"; }}
+            onBlur={e => { if (!error) e.target.style.borderColor = "#e2e8f0"; }}
+          />
+          {error && <div style={{ color: "#ef4444", fontSize: "0.8rem", marginTop: "0.2rem" }}>{error}</div>}
+          {children}
+        </div>
+      );
+    }
+
+    function App() {
+      const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
+      const [errors, setErrors] = useState({});
+      const [submitted, setSubmitted] = useState(false);
+      const [showPassword, setShowPassword] = useState(false);
+
+      const update = (field) => (e) => {
+        setForm(prev => ({ ...prev, [field]: e.target.value }));
+        if (errors[field]) setErrors(prev => ({ ...prev, [field]: "" }));
+      };
+
+      const validate = () => {
+        const e = {};
+        if (form.name.trim().length < 2) e.name = "Name must be at least 2 characters";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = "Enter a valid email address";
+        if (form.password.length < 8) e.password = "Password must be at least 8 characters";
+        else if (getPasswordStrength(form.password) < 2) e.password = "Password is too weak";
+        if (form.confirm !== form.password) e.confirm = "Passwords do not match";
+        setErrors(e);
+        return Object.keys(e).length === 0;
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validate()) setSubmitted(true);
+      };
+
+      if (submitted) {
+        return (
+          <div style={{
+            fontFamily: "'Segoe UI', system-ui, sans-serif",
+            background: "#f1f5f9", minHeight: "100vh",
+            display: "flex", justifyContent: "center", alignItems: "center", padding: "2rem",
+          }}>
+            <div style={{
+              background: "#fff", borderRadius: 16, boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+              padding: "2.5rem", textAlign: "center", maxWidth: 420,
+            }}>
+              <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🎉</div>
+              <h2 style={{ fontSize: "1.25rem", color: "#16a34a", marginBottom: "0.3rem" }}>Account Created!</h2>
+              <p style={{ fontSize: "0.9rem", color: "#64748b", marginBottom: "1rem" }}>
+                Welcome, {form.name}! Your account has been registered with {form.email}.
+              </p>
+              <button onClick={() => { setSubmitted(false); setForm({ name: "", email: "", password: "", confirm: "" }); }}
+                style={{
+                  padding: "0.6rem 1.5rem", background: "#4f46e5", color: "#fff",
+                  border: "none", borderRadius: 8, fontWeight: 600, cursor: "pointer",
+                }}
+              >Sign Up Another</button>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div style={{
+          fontFamily: "'Segoe UI', system-ui, sans-serif",
+          background: "#f1f5f9", minHeight: "100vh",
+          display: "flex", justifyContent: "center", alignItems: "center", padding: "2rem",
+        }}>
+          <div style={{
+            background: "#fff", width: "100%", maxWidth: 440,
+            borderRadius: 16, boxShadow: "0 4px 24px rgba(0,0,0,0.08)", padding: "2rem",
+          }}>
+            <h1 style={{ textAlign: "center", fontSize: "1.4rem", marginBottom: "0.2rem", color: "#0f172a" }}>
+              Create Account
+            </h1>
+            <p style={{ textAlign: "center", color: "#64748b", fontSize: "0.85rem", marginBottom: "1.5rem" }}>
+              Assignment — 12th March 2026
+            </p>
+
+            <form onSubmit={handleSubmit}>
+              <InputField label="Full Name" type="text" value={form.name} onChange={update("name")} error={errors.name} />
+              <InputField label="Email Address" type="email" value={form.email} onChange={update("email")} error={errors.email} />
+              <InputField label="Password" type={showPassword ? "text" : "password"} value={form.password} onChange={update("password")} error={errors.password}>
+                <PasswordStrengthBar password={form.password} />
+                <PasswordChecklist password={form.password} />
+              </InputField>
+              <InputField label="Confirm Password" type={showPassword ? "text" : "password"} value={form.confirm} onChange={update("confirm")} error={errors.confirm} />
+
+              <label style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.82rem", color: "#64748b", marginBottom: "1rem", cursor: "pointer" }}>
+                <input type="checkbox" checked={showPassword} onChange={() => setShowPassword(p => !p)}
+                  style={{ accentColor: "#4f46e5" }}
+                /> Show passwords
+              </label>
+
+              <button type="submit" style={{
+                width: "100%", padding: "0.75rem", background: "#4f46e5", color: "#fff",
+                border: "none", borderRadius: 10, fontSize: "1rem", fontWeight: 700,
+                cursor: "pointer", transition: "background 0.2s",
+              }}>Sign Up</button>
+            </form>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
