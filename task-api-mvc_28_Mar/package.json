@@ -1,0 +1,12 @@
+{
+  "name": "task-api-mvc",
+  "version": "1.0.0",
+  "description": "Assignment 28 Mar 2026 — Task API refactored to MVC",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

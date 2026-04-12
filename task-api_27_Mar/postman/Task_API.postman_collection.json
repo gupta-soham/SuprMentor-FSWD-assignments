@@ -1,0 +1,70 @@
+{
+  "info": {
+    "name": "Task API — 27 Mar 2026",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "base", "value": "http://localhost:4001" }],
+  "item": [
+    {
+      "name": "List tasks",
+      "request": { "method": "GET", "header": [], "url": "{{base}}/api/tasks" }
+    },
+    {
+      "name": "List open tasks",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base}}/api/tasks?done=false"
+      }
+    },
+    {
+      "name": "Get task by id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{base}}/api/tasks/1"
+      }
+    },
+    {
+      "name": "Create task",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Ship assignment\",\n  \"priority\": \"high\"\n}"
+        },
+        "url": "{{base}}/api/tasks"
+      }
+    },
+    {
+      "name": "Update task (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Ship assignment v2\",\n  \"done\": false,\n  \"priority\": \"high\"\n}"
+        },
+        "url": "{{base}}/api/tasks/1"
+      }
+    },
+    {
+      "name": "Toggle done (PATCH)",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"done\": true\n}" },
+        "url": "{{base}}/api/tasks/1"
+      }
+    },
+    {
+      "name": "Delete task",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "{{base}}/api/tasks/3"
+      }
+    }
+  ]
+}

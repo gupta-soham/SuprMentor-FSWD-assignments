@@ -1,0 +1,16 @@
+{
+  "name": "secure-login-jwt",
+  "version": "1.0.0",
+  "description": "Assignment 06 Apr 2026 — bcrypt + JWT signup/login",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.3"
+  }
+}

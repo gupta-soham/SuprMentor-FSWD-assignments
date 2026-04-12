@@ -1,0 +1,13 @@
+{
+  "name": "route-master-bookstore",
+  "version": "1.0.0",
+  "description": "Assignment 26 Mar 2026 — Express routes for books & authors",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
