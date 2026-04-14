@@ -1,0 +1,66 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: urlshort-mongo
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: urlshort-api
+    restart: unless-stopped
+    ports:
+      - "${API_PORT:-4010}:4010"
+    env_file: .env
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/urlshortener
+    depends_on:
+      mongo:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:4010/health').then(r=>{if(!r.ok)throw 1})",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: urlshort-client
+    restart: unless-stopped
+    expose:
+      - "5173"
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: urlshort-nginx
+    restart: unless-stopped
+    ports:
+      - "${NGINX_PORT:-3000}:80"
+    depends_on:
+      - server
+      - client
+
+volumes:
+  mongo_data:
