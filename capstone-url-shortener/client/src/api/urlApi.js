@@ -10,8 +10,13 @@ async function request(path, options = {}) {
   return data;
 }
 
-export const shortenUrl = (url) =>
-  request("/shorten", { method: "POST", body: JSON.stringify({ url }) });
+export const shortenUrl = (url, expiresIn) =>
+  request("/shorten", {
+    method: "POST",
+    body: JSON.stringify(
+      expiresIn ? { url, expiresIn: Number(expiresIn) } : { url },
+    ),
+  });
 
 export const listUrls = (page = 1, limit = 20) =>
   request(`/urls?page=${page}&limit=${limit}`);

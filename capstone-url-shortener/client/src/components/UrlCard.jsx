@@ -1,6 +1,22 @@
+import { useState } from "react";
 import { deleteUrl } from "../api/urlApi.js";
+import QRModal from "./QRModal.jsx";
 
-export default function UrlCard({ url, onDeleted, onViewStats }) {
+function getExpiryInfo(expiresAt) {
+  if (!expiresAt) return null;
+  const diff = new Date(expiresAt) - Date.now();
+  if (diff <= 0) return { text: "Expired", expired: true };
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  if (days > 0) return { text: `${days}d left`, expired: false };
+  if (hours > 0) return { text: `${hours}h left`, expired: false };
+  const mins = Math.floor(diff / 60000);
+  return { text: `${mins}m left`, expired: false };
+}
+
+export default function UrlCard({ url, index, onDeleted, onViewStats }) {
+  const [showQR, setShowQR] = useState(false);
+
   async function handleDelete() {
     try {
       await deleteUrl(url.shortCode);
@@ -14,76 +30,55 @@ export default function UrlCard({ url, onDeleted, onViewStats }) {
     navigator.clipboard.writeText(url.shortUrl).catch(() => {});
   }
 
+  const expiry = getExpiryInfo(url.expiresAt);
+
   return (
-    <li style={styles.card}>
-      <div style={styles.top}>
+    <li className="url-card" style={{ animationDelay: `${index * 50}ms` }}>
+      <div className="url-card__top">
         <a
           href={url.shortUrl}
           target="_blank"
           rel="noopener noreferrer"
-          style={styles.short}
+          className="url-card__short"
         >
           {url.shortUrl}
         </a>
-        <span style={styles.clicks}>{url.clicks} clicks</span>
+        <div className="url-card__meta">
+          {expiry && (
+            <span
+              className={`expiry-badge${expiry.expired ? " expiry-badge--expired" : ""}`}
+            >
+              {expiry.text}
+            </span>
+          )}
+          <span className="url-card__clicks">{url.clicks} clicks</span>
+        </div>
       </div>
-      <p style={styles.long} title={url.longUrl}>
+      <p className="url-card__long">
         {url.longUrl.length > 80
           ? url.longUrl.slice(0, 77) + "..."
           : url.longUrl}
       </p>
-      <div style={styles.actions}>
-        <button onClick={copy} style={styles.btn}>
+      <div className="url-card__actions">
+        <button onClick={copy} className="btn-secondary">
           Copy
         </button>
-        <button onClick={() => onViewStats(url.shortCode)} style={styles.btn}>
-          Stats
+        <button onClick={() => setShowQR(true)} className="btn-secondary">
+          QR
         </button>
         <button
-          onClick={handleDelete}
-          style={{ ...styles.btn, color: "#c0392b" }}
+          onClick={() => onViewStats(url.shortCode)}
+          className="btn-secondary"
         >
+          Stats
+        </button>
+        <button onClick={handleDelete} className="btn-danger">
           Delete
         </button>
       </div>
+      {showQR && (
+        <QRModal url={url.shortUrl} onClose={() => setShowQR(false)} />
+      )}
     </li>
   );
 }
-
-const styles = {
-  card: {
-    background: "#fff",
-    border: "1px solid #eee",
-    borderRadius: 10,
-    padding: "0.9rem 1rem",
-    listStyle: "none",
-  },
-  top: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  short: {
-    fontWeight: 600,
-    color: "#2980b9",
-    textDecoration: "none",
-    fontSize: "0.95rem",
-  },
-  clicks: { fontSize: "0.82rem", color: "#888" },
-  long: {
-    fontSize: "0.82rem",
-    color: "#555",
-    margin: "0.35rem 0 0.5rem",
-    wordBreak: "break-all",
-  },
-  actions: { display: "flex", gap: 8 },
-  btn: {
-    padding: "0.25rem 0.65rem",
-    fontSize: "0.78rem",
-    background: "#f4f4f4",
-    border: "1px solid #ddd",
-    borderRadius: 6,
-    cursor: "pointer",
-    color: "#333",
-  },
-};
