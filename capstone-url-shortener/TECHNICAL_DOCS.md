@@ -21,8 +21,8 @@ graph TB
 | Service    | Technology          | Port                                | Role                                                                                   |
 | ---------- | ------------------- | ----------------------------------- | -------------------------------------------------------------------------------------- |
 | **nginx**  | Nginx 1.27 Alpine   | 80 (host)                           | Reverse proxy, routes `/api` and short-code paths to Express, everything else to React |
-| **client** | React 18 + Vite 6   | 5173 (internal)                     | Single-page UI for shortening, listing, analytics                                      |
-| **server** | Node 20 + Express 4 | 4010 (internal, optionally mapped)  | REST API, redirect handler, hashing engine                                             |
+| **client** | React 18 + Vite 6, cobe v2, qrcode.react | 5173 (internal)       | Single-page UI with analytics dashboard, 3D globe, heatmap, QR codes                  |
+| **server** | Node 20 + Express 4, ua-parser-js, geoip-lite | 4010 (internal, optionally mapped) | REST API, redirect handler, hashing engine, visitor analytics |
 | **mongo**  | MongoDB 7           | 27017 (internal, optionally mapped) | Persistent storage with unique indexes                                                 |
 
 ## 2. URL Shortening — Hashing Algorithm
@@ -103,6 +103,7 @@ erDiagram
     string longUrl
     string shortCode UK "unique index"
     int clicks "default 0"
+    datetime expiresAt "TTL index, nullable"
     array clickLog "embedded sub-docs"
     datetime createdAt
     datetime updatedAt
@@ -112,6 +113,14 @@ erDiagram
     datetime timestamp
     string referrer
     string userAgent
+    string ip
+    string device
+    string browser
+    string os
+    string country
+    string city
+    float lat
+    float lng
   }
 
   Url ||--o{ ClickEntry : "clickLog contains"
@@ -121,17 +130,37 @@ erDiagram
 
 - `shortCode`: **unique** — primary lookup for redirects and collision checks
 - `longUrl`: **non-unique** — used for deduplication lookups
+- `expiresAt`: **TTL index** (`expireAfterSeconds: 0`, sparse) — MongoDB automatically deletes expired documents
 
 ## 4. API Reference
 
-| Method   | Path                    | Body / Query               | Response                                                        |
-| -------- | ----------------------- | -------------------------- | --------------------------------------------------------------- |
-| `POST`   | `/api/shorten`          | `{ "url": "https://..." }` | `201 { shortUrl, shortCode, longUrl, created }`                 |
-| `GET`    | `/api/urls`             | `?page=1&limit=20`         | `200 { urls[], page, totalPages, total }`                       |
-| `GET`    | `/api/urls/:code/stats` | —                          | `200 { shortCode, longUrl, clicks, recentClicks[], createdAt }` |
-| `DELETE` | `/api/urls/:code`       | —                          | `200 { deleted, shortCode }`                                    |
-| `GET`    | `/:code`                | —                          | `302` redirect to `longUrl`                                     |
-| `GET`    | `/health`               | —                          | `200 { status: "ok" }`                                          |
+| Method   | Path                    | Body / Query                                        | Response                                                                                                           |
+| -------- | ----------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `POST`   | `/api/shorten`          | `{ "url": "https://...", "expiresIn": 3600 }`       | `201 { shortUrl, shortCode, longUrl, created, expiresAt }`                                                         |
+| `GET`    | `/api/urls`             | `?page=1&limit=20`                                  | `200 { urls[], page, totalPages, total }` (each url includes `expiresAt`)                                          |
+| `GET`    | `/api/urls/:code/stats` | —                                                   | `200 { shortCode, longUrl, clicks, uniqueVisitors, devices, browsers, os, referrers, countries, geoLocations, hourlyActivity, expiresAt, createdAt }` |
+| `DELETE` | `/api/urls/:code`       | —                                                   | `200 { deleted, shortCode }`                                                                                       |
+| `GET`    | `/:code`                | —                                                   | `302` redirect to `longUrl` (checks expiry)                                                                        |
+| `GET`    | `/health`               | —                                                   | `200 { status: "ok" }`                                                                                             |
+
+The `expiresIn` field in the shorten request is optional and expressed in seconds. When omitted, the link never expires.
+
+### Stats Response Detail
+
+The `/api/urls/:code/stats` endpoint returns aggregated analytics:
+
+| Field             | Type       | Description                                                  |
+| ----------------- | ---------- | ------------------------------------------------------------ |
+| `clicks`          | `number`   | Total click count                                            |
+| `uniqueVisitors`  | `number`   | Count of distinct IP addresses                               |
+| `devices`         | `array`    | `[{ name, count }]` aggregated by device type                |
+| `browsers`        | `array`    | `[{ name, count }]` aggregated by browser name               |
+| `os`              | `array`    | `[{ name, count }]` aggregated by operating system           |
+| `referrers`       | `array`    | `[{ name, count }]` aggregated by referrer domain            |
+| `countries`       | `array`    | `[{ name, count }]` aggregated by country code               |
+| `geoLocations`    | `array`    | `[{ lat, lng, city, country, count }]` for globe markers     |
+| `hourlyActivity`  | `number[]` | 168-element array (7 days x 24 hours) for heatmap rendering  |
+| `expiresAt`       | `string`   | ISO date or `null`                                           |
 
 ### Error Responses
 
@@ -140,6 +169,7 @@ erDiagram
 | 400  | Invalid URL, missing field, blocked domain |
 | 404  | Short code not found                       |
 | 409  | Short code conflict (race condition)       |
+| 410  | Link has expired                           |
 | 429  | Rate limit exceeded                        |
 | 500  | Server error (e.g. hash retries exhausted) |
 
@@ -188,14 +218,24 @@ sequenceDiagram
   actor User
   participant Nginx
   participant Express
+  participant GeoIP
   participant MongoDB
 
   User->>Nginx: GET /abc1234
   Nginx->>Express: proxy (short-code regex match)
-  Express->>MongoDB: findOneAndUpdate (increment clicks)
-  MongoDB-->>Express: { longUrl }
-  Express-->>User: 302 Location: longUrl
-  User->>User: Browser follows redirect
+  Express->>Express: Parse UA (device, browser, OS)
+  Express->>GeoIP: geoip-lite lookup (IP)
+  alt Local lookup fails (private IP)
+    Express->>GeoIP: ip-api.com fallback
+    GeoIP-->>Express: { country, city, lat, lng }
+  end
+  Express->>MongoDB: findOneAndUpdate (check expiry, increment clicks, push visitor)
+  alt Not expired
+    MongoDB-->>Express: { longUrl }
+    Express-->>User: 302 Location: longUrl
+  else Expired
+    Express-->>User: 410 Link has expired
+  end
 ```
 
 ## 6. Docker Compose Networking
@@ -225,7 +265,60 @@ graph LR
 
 All inter-service communication happens on the Docker bridge network. Only Nginx port 80 is mandatory on the host.
 
-## 7. Rate Limiting
+## 7. Enhanced Analytics
+
+### 7.1 Visitor Data Collection
+
+Each redirect logs a rich visitor object via `parseVisitor(req)`:
+
+| Field     | Source                      | Description                             |
+| --------- | --------------------------- | --------------------------------------- |
+| `device`  | `ua-parser-js`              | Device type (desktop, mobile, tablet)   |
+| `browser` | `ua-parser-js`              | Browser name and version                |
+| `os`      | `ua-parser-js`              | Operating system                        |
+| `ip`      | `x-forwarded-for` / `x-real-ip` / `req.ip` | Client IP (Docker-aware)       |
+| `country` | `geoip-lite` / `ip-api.com` | ISO country code                        |
+| `city`    | `geoip-lite` / `ip-api.com` | City name                               |
+| `lat`     | `geoip-lite` / `ip-api.com` | Latitude                                |
+| `lng`     | `geoip-lite` / `ip-api.com` | Longitude                               |
+| `referrer`| `req.get("referrer")`       | Referring URL (or "Direct")             |
+
+### 7.2 Geographic IP Resolution
+
+```mermaid
+flowchart TD
+  A[Extract client IP] --> B[Strip ::ffff: prefix]
+  B --> C{geoip-lite local lookup}
+  C -->|Hit| D[Use local result]
+  C -->|Miss / private IP| E[Check in-memory cache]
+  E -->|Cached| F[Use cached result]
+  E -->|Not cached| G["HTTP GET ip-api.com/json/{ip}"]
+  G -->|Success| H[Cache result, return]
+  G -->|Failure| I["Return empty geo (Unknown)"]
+```
+
+The `ip-api.com` fallback resolves Docker-internal IPs (172.x, 10.x) to the host's public IP, enabling geolocation even in containerized environments.
+
+### 7.3 Link Expiry
+
+Links can be created with an optional `expiresIn` (seconds) parameter. When set:
+
+- A `Date` is computed: `new Date(Date.now() + expiresIn * 1000)` and stored in `expiresAt`.
+- MongoDB's TTL index (`expireAfterSeconds: 0`) automatically purges expired documents.
+- On redirect, the query includes `$or: [{ expiresAt: null }, { expiresAt: { $gt: new Date() } }]` to reject expired links with a 410 status.
+
+### 7.4 Frontend Visualization
+
+| Component   | Library        | Purpose                                                     |
+| ----------- | -------------- | ----------------------------------------------------------- |
+| `Globe`     | `cobe` v2      | Interactive 3D WebGL globe with draggable rotation and markers at click locations |
+| `Heatmap`   | Custom CSS grid| 7x24 grid (day-of-week x hour) showing click density with purple intensity scale  |
+| `QRModal`   | `qrcode.react` | SVG QR code rendered in a portal-based modal overlay         |
+| `BarChart`  | Custom CSS     | Horizontal bar charts for devices, browsers, OS, referrers, and countries        |
+
+The globe uses the cobe v2 API (`globe.update()` in a `requestAnimationFrame` loop) with pointer-event-driven drag rotation and momentum damping.
+
+## 8. Rate Limiting
 
 | Limiter | Scope               | Window | Max Requests |
 | ------- | ------------------- | ------ | ------------ |
@@ -234,7 +327,7 @@ All inter-service communication happens on the Docker bridge network. Only Nginx
 
 Implemented via `express-rate-limit` with standard headers (`RateLimit-*`).
 
-## 8. Security Measures
+## 9. Security Measures
 
 - **Helmet**: sets secure HTTP headers (CSP, HSTS, X-Frame-Options, etc.)
 - **URL validation**: only `http://` and `https://` schemes allowed
@@ -242,7 +335,7 @@ Implemented via `express-rate-limit` with standard headers (`RateLimit-*`).
 - **Rate limiting**: prevents abuse and DDoS-style requests
 - **Input sanitization**: URLs are normalized before hashing
 
-## 9. Scalability Considerations
+## 10. Scalability Considerations
 
 For production scale beyond this capstone:
 
@@ -255,7 +348,7 @@ For production scale beyond this capstone:
 | **Analytics volume**     | Move `clickLog` to a separate time-series collection or ClickHouse |
 | **Code exhaustion**      | Increase `SHORT_CODE_LENGTH` from 7 to 8 (×62 capacity)            |
 
-## 10. Running the Project
+## 11. Running the Project
 
 ```bash
 # Clone and start
@@ -279,7 +372,7 @@ npm test          # runs Jest (unit + integration — needs local MongoDB for ap
 | Variable                | Default                              | Description                      |
 | ----------------------- | ------------------------------------ | -------------------------------- |
 | `MONGODB_URI`           | `mongodb://mongo:27017/urlshortener` | MongoDB connection string        |
-| `BASE_URL`              | `http://localhost`                   | Prefix for generated short URLs  |
+| `BASE_URL`              | `http://localhost:3000`              | Prefix for generated short URLs  |
 | `SHORT_CODE_LENGTH`     | `7`                                  | Length of generated short codes  |
 | `MAX_COLLISION_RETRIES` | `10`                                 | Max rehash attempts on collision |
 | `RATE_LIMIT_WINDOW_MS`  | `900000`                             | Global rate limit window (ms)    |
